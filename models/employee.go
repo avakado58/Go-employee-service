@@ -1,4 +1,4 @@
-package Models
+package models
 
 type Employee struct {
 	Id int

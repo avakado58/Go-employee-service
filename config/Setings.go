@@ -1,4 +1,4 @@
-package Config
+package config
 
 type Settings struct{
 	Port 				string 				`json:"port"`

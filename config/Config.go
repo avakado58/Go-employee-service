@@ -1,4 +1,4 @@
-package Config
+package config
 
 import (
 	"bytes"
@@ -8,7 +8,7 @@ import (
 )
 
 func ReadCfg() *Settings {
-	filePath := "./.Config/config.json"
+	filePath := "./.config/config.json"
 	fileByte, err := ioutil.ReadFile(filePath)
 	if err != nil{
 		log.Fatal(err)

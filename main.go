@@ -1,10 +1,10 @@
 package main
 
 import (
-	"EnployeeService/Config"
-	"EnployeeService/Dal"
-	"EnployeeService/Handlers"
-	"EnployeeService/Service"
+	"EnployeeService/api/handlers"
+	"EnployeeService/config"
+	"EnployeeService/dal"
+	"EnployeeService/service"
 	"fmt"
 	"github.com/gorilla/mux"
 	"log"
@@ -12,12 +12,12 @@ import (
 )
 
 func main() {
-	cfg := Config.ReadCfg()
+	cfg := config.ReadCfg()
 	log.Println(fmt.Sprintf("Server started on port %s enviroment is %s", cfg.Port, cfg.Env))
 
-	repos := Dal.NewEmployeeRepository(cfg.ConnectionString)
-	emplService := Service.NewEmployeeService(repos)
-	emplHandler := Handlers.NewEmployeeHandler(emplService)
+	repos := dal.NewEmployeeRepository(cfg.ConnectionString)
+	emplService := service.NewEmployeeService(repos)
+	emplHandler := handlers.NewEmployeeHandler(emplService)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/employee/{id}", emplHandler.GetEmployee).Methods(http.MethodGet)

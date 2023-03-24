@@ -1,8 +1,8 @@
-package Handlers
+package handlers
 
 import (
-	"EnployeeService/Interface"
-	"EnployeeService/Models"
+	"EnployeeService/models"
+	"EnployeeService/service"
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -10,10 +10,10 @@ import (
 )
 
 type EmployeeHandler struct {
-	es Interface.IEmployeeService
+	es service.EmployeeService
 }
 
-func NewEmployeeHandler(es Interface.IEmployeeService) *EmployeeHandler {
+func NewEmployeeHandler(es service.EmployeeService) *EmployeeHandler {
 	return &EmployeeHandler{
 		es: es,
 	}
@@ -45,7 +45,7 @@ func (eh *EmployeeHandler)GetEmployee(w http.ResponseWriter, r *http.Request)  {
 
 func (eh *EmployeeHandler)SetEmployee(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;encoding=utf-8")
-	emp := Models.Employee{}
+	emp := models.Employee{}
 	if err := json.NewDecoder(r.Body).Decode(&emp); err != nil{
 		w.WriteHeader(403)
 		return

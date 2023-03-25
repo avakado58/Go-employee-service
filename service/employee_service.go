@@ -7,7 +7,7 @@ import (
 
 type EmployeeService interface {
 	SetEmployee(employee *models.Employee) (id int)
-	GetEmployee(id int) *[]models.Employee
+	GetEmployee(id int) []models.Employee
 }
 
 type EmployeeServices struct {

@@ -1,14 +1,14 @@
 package dal
 
 import (
+	dal "EnployeeService/dal/models"
 	"EnployeeService/dal/query"
-	"EnployeeService/models"
 	"database/sql"
 	"fmt"
-	_"github.com/lib/pq"
+	_ "github.com/lib/pq"
 )
 
-func (e *EmployeeRepository)GetDbEmployee(id int) *[]models.Employee{
+func (e *EmployeeRepository)GetDbEmployee(id int) []dal.Employee{
 	db, err := sql.Open("postgres", e.ConnectionString)
 	if err != nil {
 		fmt.Println(err)
@@ -22,11 +22,11 @@ func (e *EmployeeRepository)GetDbEmployee(id int) *[]models.Employee{
 
 	defer rows.Close()
 
-	employees := make([]models.Employee, 0, 1)
+	employees := make([]dal.Employee, 0, 1)
 
 	for rows.Next(){
-		emp := models.Employee{}
-		err := rows.Scan(&emp.Id, &emp.Name, &emp.SecondName, &emp.Sex, &emp.Age)
+		emp := dal.Employee{}
+		err := rows.Scan(&emp.Id, &emp.Email, &emp.Age, &emp.Sex, &emp.Name, &emp.Surname, &emp.Patronymic, &emp.Birthday, &emp.PhoneNumber)
 		if err != nil {
 			fmt.Println(err)
 			continue
@@ -35,10 +35,10 @@ func (e *EmployeeRepository)GetDbEmployee(id int) *[]models.Employee{
 		employees = append(employees, emp)
 	}
 
-	return &employees
+	return employees
 }
 
-func (e *EmployeeRepository) SetDbEmployee(employee *models.Employee) (id int) {
+func (e *EmployeeRepository) SetDbEmployee(employee *dal.Employee) (id int) {
 	db, err := sql.Open("postgres", e.ConnectionString)
 	if err != nil {
 		fmt.Println(err)
@@ -46,7 +46,17 @@ func (e *EmployeeRepository) SetDbEmployee(employee *models.Employee) (id int) {
 
 	defer db.Close()
 
-	db.QueryRow(query.SaveEmployee, employee.Name, employee.SecondName, employee.Sex, employee.Age).Scan(&id)
+	db.QueryRow(
+		query.SaveEmployee,
+		employee.Id,
+		employee.Email,
+		employee.Age,
+		employee.Sex,
+		employee.Name,
+		employee.Surname,
+		employee.Patronymic,
+		employee.Birthday,
+		employee.PhoneNumber).Scan(&id)
 	fmt.Println(id)
 	return
 }

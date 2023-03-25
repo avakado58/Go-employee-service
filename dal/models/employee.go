@@ -1,15 +1,17 @@
 package dal
 
-import "time"
+import (
+	"time"
+)
 
 type Employee struct {
-	id              int
-	name            string
-	surname     	string
-	patronymic      string
-	age             int
-	sex             string
-	phone_number    string
-	birthday        time.Time
-	email           string
+	Id              int
+	Name            string
+	Surname     	string
+	Patronymic      string
+	Age             int
+	Sex             string
+	PhoneNumber    	string
+	Birthday        time.Time
+	Email           string
 }

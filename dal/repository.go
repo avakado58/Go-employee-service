@@ -1,12 +1,12 @@
 package dal
 
 import (
-	"EnployeeService/models"
+	dal "EnployeeService/dal/models"
 )
 
 type Repository interface {
-	GetDbEmployee(id int) *[]models.Employee
-	SetDbEmployee(employee *models.Employee) (id int)
+	GetDbEmployee(id int) []dal.Employee
+	SetDbEmployee(employee *dal.Employee) (id int)
 }
 
 type EmployeeRepository struct {

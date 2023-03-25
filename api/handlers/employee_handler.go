@@ -19,7 +19,7 @@ func NewEmployeeHandler(es service.EmployeeService) *EmployeeHandler {
 	}
 }
 
-func (eh *EmployeeHandler)GetEmployee(w http.ResponseWriter, r *http.Request)  {
+func (eh *EmployeeHandler)GetFullEmployee(w http.ResponseWriter, r *http.Request)  {
 	w.Header().Set("Content-Type", "application/json;encoding=utf-8")
 	vars := mux.Vars(r)
 	idVar, ok := vars["id"]
@@ -43,7 +43,7 @@ func (eh *EmployeeHandler)GetEmployee(w http.ResponseWriter, r *http.Request)  {
 	w.WriteHeader(200)
 }
 
-func (eh *EmployeeHandler)SetEmployee(w http.ResponseWriter, r *http.Request) {
+func (eh *EmployeeHandler)SaveEmployee(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;encoding=utf-8")
 	emp := models.Employee{}
 	if err := json.NewDecoder(r.Body).Decode(&emp); err != nil{
@@ -58,4 +58,20 @@ func (eh *EmployeeHandler)SetEmployee(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(200)
+}
+
+func (eh *EmployeeHandler)GetEmployee(w http.ResponseWriter, r *http.Request)  {
+
+}
+
+func (eh *EmployeeHandler)UpdateEmployee(w http.ResponseWriter, r *http.Request)  {
+
+}
+
+func (eh *EmployeeHandler)DeleteEmployee(w http.ResponseWriter, r *http.Request)  {
+
+}
+
+func (eh *EmployeeHandler)GetEmployeeByDepartmentId(w http.ResponseWriter, r *http.Request)  {
+
 }

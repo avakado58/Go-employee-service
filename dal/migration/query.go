@@ -16,7 +16,7 @@ create index employees_employee_id on employees(id);
 `
 
 const AddDepartmentTable = `
-create table department(
+create table departments(
     id                                  serial primary key,
     name                                varchar(100),
     description                         varchar(100),

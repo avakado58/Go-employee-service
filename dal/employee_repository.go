@@ -5,7 +5,7 @@ import (
 	"EnployeeService/models"
 	"database/sql"
 	"fmt"
-	_ "github.com/lib/pq"
+	_"github.com/lib/pq"
 )
 
 func (e *EmployeeRepository)GetDbEmployee(id int) *[]models.Employee{

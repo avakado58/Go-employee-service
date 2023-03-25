@@ -5,8 +5,11 @@ import (
 )
 
 type Repository interface {
-	GetDbEmployee(id int) []dal.Employee
-	SetDbEmployee(employee *dal.Employee) (id int)
+	GetEmployee(id int) []dal.Employee
+	SaveEmployee(employee *dal.Employee) (id int)
+	GetDepartment(employeeId int) (department []dal.Department)
+	SaveDepartment(department *dal.Department) (id int)
+	GetEmployeesDepartment(employeeIds []int) (employeesDepartment []dal.EmployeesDepartment)
 }
 
 type EmployeeRepository struct {

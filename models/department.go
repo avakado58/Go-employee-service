@@ -1,9 +1,9 @@
 package models
 
 type Department struct {
-	id                                  int
-	name                                string
-	description                         string
+	Id                                  int
+	Name                                string
+	Description                         string
 	HeadOfDepartment     				*Employee
 	IsClose                            	bool
 }

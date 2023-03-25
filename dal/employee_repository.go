@@ -8,7 +8,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func (e *EmployeeRepository)GetDbEmployee(id int) []dal.Employee{
+func (e *EmployeeRepository)GetEmployee(id int) []dal.Employee{
 	db, err := sql.Open("postgres", e.ConnectionString)
 	if err != nil {
 		fmt.Println(err)
@@ -38,7 +38,7 @@ func (e *EmployeeRepository)GetDbEmployee(id int) []dal.Employee{
 	return employees
 }
 
-func (e *EmployeeRepository) SetDbEmployee(employee *dal.Employee) (id int) {
+func (e *EmployeeRepository) SaveEmployee(employee *dal.Employee) (id int) {
 	db, err := sql.Open("postgres", e.ConnectionString)
 	if err != nil {
 		fmt.Println(err)
@@ -58,5 +58,62 @@ func (e *EmployeeRepository) SetDbEmployee(employee *dal.Employee) (id int) {
 		employee.Birthday,
 		employee.PhoneNumber).Scan(&id)
 	fmt.Println(id)
+	return
+}
+
+func (e *EmployeeRepository)GetDepartment(employeeId int) (department []dal.Department) {
+	db, err := sql.Open("postgres", e.ConnectionString)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	defer db.Close()
+
+	rows, err := db.Query(query.GetDepartmentByEmployeeId, employeeId)
+
+	for rows.Next() {
+		dep := dal.Department{}
+		err := rows.Scan(&dep.Id, &dep.Name, &dep.Description, &dep.HeadOfDepartmentEmployeeId, &dep.IsClose)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+
+		department = append(department, dep)
+	}
+
+	defer rows.Close()
+
+	return
+}
+
+func (e *EmployeeRepository)SaveDepartment(department *dal.Department) (id int) {
+
+	return
+}
+
+func (e *EmployeeRepository)GetEmployeesDepartment(employeeIds []int) (employeesDepartment []dal.EmployeesDepartment) {
+	db, err := sql.Open("postgres", e.ConnectionString)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	defer db.Close()
+
+	rows, err := db.Query(query.GetEmployeesDepartmentByEmployeeIds, employeeIds)
+
+	for rows.Next() {
+		dep := dal.EmployeesDepartment{}
+		err := rows.Scan(&dep.Id, &dep.EmployeeId, &dep.DepartmentId)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+
+		employeesDepartment = append(employeesDepartment, dep)
+	}
+
+	defer rows.Close()
+
 	return
 }

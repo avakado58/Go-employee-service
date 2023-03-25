@@ -5,7 +5,7 @@ import (
 	"EnployeeService/models"
 )
 
-func MapToDomain(e dal.Employee) *models.Employee{
+func EmployeeMapToDomain(e dal.Employee) *models.Employee{
 	return &models.Employee{
 		Id:          e.Id,
 		Name:        e.Name,
@@ -19,7 +19,7 @@ func MapToDomain(e dal.Employee) *models.Employee{
 	}
 }
 
-func MapToDB(e *models.Employee) *dal.Employee  {
+func EmployeeMapToDB(e *models.Employee) *dal.Employee  {
 	return &dal.Employee{
 		Id:          e.Id,
 		Name:        e.Name,

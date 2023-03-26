@@ -5,19 +5,19 @@ import (
 	"EnployeeService/models"
 )
 
-func (e *EmployeeServices)SetEmployee(employee *models.Employee) (id int)  {
-	return e.EmployeeRepository.SaveEmployee(mappers.EmployeeMapToDB(employee))
+func (e *EmployeeServices) SaveEmployee(employee *models.Employee) (id int, err error) {
+	return e.EmployeeRepository.SaveEmployee(mappers.EmployeeMapToDB(employee)), nil
 }
 
-func (e *EmployeeServices)GetEmployee(id int) (employees []models.Employee)  {
+func (e *EmployeeServices) GetFullEmployee(id int) (employees []models.Employee, err error) {
 	dbEmployees := e.EmployeeRepository.GetEmployee(id)
 
-	for _, dbEmp := range dbEmployees{
+	for _, dbEmp := range dbEmployees {
 		emp := mappers.EmployeeMapToDomain(dbEmp)
 		dbDeps := e.EmployeeRepository.GetDepartment(dbEmp.Id)
 		departments := make([]models.Department, 0, 1)
 
-		for _, dbDep := range dbDeps{
+		for _, dbDep := range dbDeps {
 			dep := mappers.DepartmentMapToDomain(dbDep)
 			departments = append(departments, *dep)
 		}
@@ -29,7 +29,18 @@ func (e *EmployeeServices)GetEmployee(id int) (employees []models.Employee)  {
 	return
 }
 
-func (e *EmployeeServices)fillDepartment(emp *models.Employee, id int) (employees []models.Employee) {
+func (e *EmployeeServices) GetEmployee(id int) (employees []models.Employee, err error) {
 	return
 }
 
+func (e *EmployeeServices) UpdateEmployee(employee *models.Employee) (err error) {
+	return
+}
+
+func (e *EmployeeServices) DeleteEmployee(id int) (deletedId int, err error) {
+	return
+}
+
+func (e *EmployeeServices) GetEmployeesByDepartmentId(id int) (employees []models.Employee, err error) {
+	return
+}

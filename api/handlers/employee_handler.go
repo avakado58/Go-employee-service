@@ -52,7 +52,6 @@ func (eh *EmployeeHandler) GetEmployee(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;encoding=utf-8")
 	var id int
 	id = eh.getParam(r, w, "id", id).(int)
-
 	emp, err := eh.es.GetEmployee(id)
 	if err != nil {
 		w.WriteHeader(404)
@@ -62,15 +61,43 @@ func (eh *EmployeeHandler) GetEmployee(w http.ResponseWriter, r *http.Request) {
 }
 
 func (eh *EmployeeHandler) UpdateEmployee(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;encoding=utf-8")
+	emp := models.Employee{}
+	if err := json.NewDecoder(r.Body).Decode(&emp); err != nil {
+		w.WriteHeader(403)
+		return
+	}
 
+	err := eh.es.UpdateEmployee(&emp)
+	if err != nil {
+		w.WriteHeader(500)
+	}
+
+	w.WriteHeader(200)
 }
 
 func (eh *EmployeeHandler) DeleteEmployee(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;encoding=utf-8")
+	var id int
+	id = eh.getParam(r, w, "id", id).(int)
+	res, err := eh.es.DeleteEmployee(id)
+	if err != nil {
+		w.WriteHeader(404)
+	}
 
+	eh.writeResponse(w, res)
 }
 
 func (eh *EmployeeHandler) GetEmployeeByDepartmentId(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json;encoding=utf-8")
+	var id int
+	id = eh.getParam(r, w, "id", id).(int)
+	emp, err := eh.es.GetEmployeesByDepartmentId(id)
+	if err != nil {
+		w.WriteHeader(404)
+	}
 
+	eh.writeResponse(w, emp)
 }
 
 func (eh *EmployeeHandler) getParam(r *http.Request, w http.ResponseWriter, name string, t interface{}) (param interface{}) {

@@ -8,7 +8,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func (e *EmployeeRepository)GetEmployee(id int) []dal.Employee{
+func (e *EmployeeRepository) GetEmployee(id int) (employees []dal.Employee, err error) {
 	db, err := sql.Open("postgres", e.ConnectionString)
 	if err != nil {
 		fmt.Println(err)
@@ -22,20 +22,26 @@ func (e *EmployeeRepository)GetEmployee(id int) []dal.Employee{
 
 	defer rows.Close()
 
-	employees := make([]dal.Employee, 0, 1)
+	employees = e.scanEmployees(rows, employees)
+	return
+}
 
-	for rows.Next(){
-		emp := dal.Employee{}
-		err := rows.Scan(&emp.Id, &emp.Email, &emp.Age, &emp.Sex, &emp.Name, &emp.Surname, &emp.Patronymic, &emp.Birthday, &emp.PhoneNumber)
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
-
-		employees = append(employees, emp)
+func (e *EmployeeRepository) GetEmployeesByDepartmentId(id int) (employees []dal.Employee, err error) {
+	db, err := sql.Open("postgres", e.ConnectionString)
+	if err != nil {
+		fmt.Println(err)
 	}
 
-	return employees
+	defer db.Close()
+	rows, err := db.Query(query.GetEmployeeByDepartmentId, id)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	defer rows.Close()
+
+	employees = e.scanEmployees(rows, employees)
+	return
 }
 
 func (e *EmployeeRepository) SaveEmployee(employee *dal.Employee) (id int) {
@@ -48,7 +54,29 @@ func (e *EmployeeRepository) SaveEmployee(employee *dal.Employee) (id int) {
 
 	db.QueryRow(
 		query.SaveEmployee,
-		employee.Id,
+		employee.Name,
+		employee.Email,
+		employee.Sex,
+		employee.Age,
+		employee.Surname,
+		employee.Patronymic,
+		employee.Birthday,
+		employee.PhoneNumber).Scan(&id)
+
+	return
+}
+
+func (e *EmployeeRepository) UpdateEmployee(employee *dal.Employee) (err error) {
+	db, err := sql.Open("postgres", e.ConnectionString)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	defer db.Close()
+
+	db.QueryRow(
+		query.UpdateEmployee,
 		employee.Email,
 		employee.Age,
 		employee.Sex,
@@ -56,64 +84,37 @@ func (e *EmployeeRepository) SaveEmployee(employee *dal.Employee) (id int) {
 		employee.Surname,
 		employee.Patronymic,
 		employee.Birthday,
-		employee.PhoneNumber).Scan(&id)
-	fmt.Println(id)
-	return
+		employee.PhoneNumber,
+		employee.Id)
+
+	return nil
 }
 
-func (e *EmployeeRepository)GetDepartment(employeeId int) (department []dal.Department) {
+func (e *EmployeeRepository) DeleteEmployee(id int) (deletedId int, err error) {
 	db, err := sql.Open("postgres", e.ConnectionString)
 	if err != nil {
 		fmt.Println(err)
+		return 0, err
 	}
 
 	defer db.Close()
 
-	rows, err := db.Query(query.GetDepartmentByEmployeeId, employeeId)
+	db.QueryRow(query.DeleteEmployee, id).Scan(&deletedId)
 
+	return
+}
+
+func (e *EmployeeRepository) scanEmployees(rows *sql.Rows, employees []dal.Employee) []dal.Employee {
 	for rows.Next() {
-		dep := dal.Department{}
-		err := rows.Scan(&dep.Id, &dep.Name, &dep.Description, &dep.HeadOfDepartmentEmployeeId, &dep.IsClose)
+		emp := dal.Employee{}
+		err := rows.Scan(&emp.Id, &emp.Email, &emp.Age, &emp.Sex, &emp.Name, &emp.Surname, &emp.Patronymic, &emp.Birthday, &emp.PhoneNumber)
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
 
-		department = append(department, dep)
+		employees = append(employees, emp)
 	}
 
-	defer rows.Close()
-
-	return
-}
-
-func (e *EmployeeRepository)SaveDepartment(department *dal.Department) (id int) {
-
-	return
-}
-
-func (e *EmployeeRepository)GetEmployeesDepartment(employeeIds []int) (employeesDepartment []dal.EmployeesDepartment) {
-	db, err := sql.Open("postgres", e.ConnectionString)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	defer db.Close()
-
-	rows, err := db.Query(query.GetEmployeesDepartmentByEmployeeIds, employeeIds)
-
-	for rows.Next() {
-		dep := dal.EmployeesDepartment{}
-		err := rows.Scan(&dep.Id, &dep.EmployeeId, &dep.DepartmentId)
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
-
-		employeesDepartment = append(employeesDepartment, dep)
-	}
-
-	defer rows.Close()
-
-	return
+	return employees
 }

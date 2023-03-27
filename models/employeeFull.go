@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type Employee struct {
+type EmployeeFull struct {
 	Id          int
 	Name        string
 	Surname     string
@@ -14,5 +14,5 @@ type Employee struct {
 	PhoneNumber string
 	Birthday    time.Time
 	Email       string
-	Departments []int
+	Departments []Department
 }

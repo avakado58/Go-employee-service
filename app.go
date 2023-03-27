@@ -13,9 +13,9 @@ import (
 )
 
 type App struct {
-	server        *http.Server
-	settings      *config.Settings
-	mainCtx       context.Context
+	server   *http.Server
+	settings *config.Settings
+	mainCtx  context.Context
 }
 
 func NewApp(cfg *config.Settings, ctx context.Context) *App {
@@ -26,19 +26,18 @@ func NewApp(cfg *config.Settings, ctx context.Context) *App {
 	}
 }
 
-func (a *App)InitServices() {
+func (a *App) InitServices() {
 	settings := config.ReadCfg()
-	repos := dal.NewEmployeeRepository(settings.ConnectionString)
-	service := service.NewEmployeeService(repos)
+	empRepos := dal.NewEmployeeRepository(settings.ConnectionString)
+	depRepos := dal.NewDepartmentRepository(settings.ConnectionString)
+	service := service.NewEmployeeService(empRepos, depRepos)
 	handler := handlers.NewEmployeeHandler(service)
 	a.server = api.NewServer(handler, a.mainCtx, a.settings.Port)
 }
 
-func (a *App)Start()  {
+func (a *App) Start() {
 	go func() {
 		log.Println(fmt.Sprintf("Server started on port %s enviroment is %s", a.settings.Port, a.settings.Env))
 		a.server.ListenAndServe()
 	}()
 }
-
-

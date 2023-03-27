@@ -5,6 +5,7 @@ import (
 	"EnployeeService/mappers"
 	"EnployeeService/models"
 	"fmt"
+	"sort"
 )
 
 func (e *EmployeeServices) SaveEmployee(employee *models.Employee) (id int, err error) {
@@ -63,6 +64,13 @@ func (e *EmployeeServices) UpdateEmployee(employee *models.Employee) (err error)
 		return
 	}
 
+	depIds := e.DepartmentRepository.GetDepartmentIdByEmployeeId(employee.Id)
+	sort.Ints(employee.Departments)
+	sort.Ints(depIds)
+	if e.equal(depIds, employee.Departments) {
+		return
+	}
+
 	err = e.DepartmentRepository.DeleteEmployeesDepartment(dbEmp[0].Id)
 	if err != nil {
 		fmt.Println(err)
@@ -114,4 +122,16 @@ func (e *EmployeeServices) saveEmployeesDepartment(employee *models.Employee) (e
 	}
 
 	return
+}
+
+func (e *EmployeeServices) equal(a, b []int) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+	}
+	return true
 }

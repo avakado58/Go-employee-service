@@ -1,6 +1,7 @@
 FROM golang:latest
+WORKDIR /go/src/Go-employee-service
+COPY . .
 
-COPY ./ ./
 RUN go install -mod vendor
-RUN go build -o go-employee
-CMD ./go-employee
+RUN go build
+CMD ["./EnployeeService"]

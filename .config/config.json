@@ -1,5 +1,5 @@
 {
   "postgr_conn_string" : "user=postgres password=cjhjrbydbrnjh dbname=employees sslmode=disable",
-  "port" : ":80",
+  "port" : "80",
   "env" : "dev"
 }
